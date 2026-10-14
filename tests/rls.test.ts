@@ -20,6 +20,7 @@ test('SQL réel : administratrice unique, isolation des brouillons et Storage',a
  const sql=await readFile(new URL('../supabase/01-schema.sql',import.meta.url),'utf8');await db.exec(sql);await db.exec(sql); // script réexécutable
  const migration=await readFile(new URL('../supabase/03-evolution-site.sql',import.meta.url),'utf8');await db.exec(migration);await db.exec(migration);
  const councilMigration=await readFile(new URL('../supabase/05-conseil-municipal.sql',import.meta.url),'utf8');await db.exec(councilMigration);await db.exec(councilMigration);
+ const councilPresentation=await readFile(new URL('../supabase/06-conseil-presentations.sql',import.meta.url),'utf8');await db.exec(councilPresentation);await db.exec(councilPresentation);
  const appearanceMigration=await readFile(new URL('../supabase/04-apparence.sql',import.meta.url),'utf8');await db.exec(appearanceMigration);await db.exec(appearanceMigration);
  await assert.rejects(()=>db.exec(`update mairie_parametres_site set apparence=jsonb_set(apparence,'{boutons}','"not-a-color"'::jsonb)`));
  await assert.rejects(()=>db.exec(`update mairie_parametres_site set apparence=jsonb_set(apparence,'{saison}','null'::jsonb)`));
@@ -59,6 +60,9 @@ test('SQL réel : administratrice unique, isolation des brouillons et Storage',a
  assert.deepEqual((await db.query('select mairie_est_administrateur() as allowed')).rows,[{allowed:true}]);
  await db.exec(`update mairie_conseil_municipal set date_naissance=((now() at time zone 'Europe/Paris')::date-interval '40 years')::date,afficher_age=true where id='rudy'`);
  assert.equal((await db.query<{age:number}>("select age from mairie_conseil_public() where id='rudy'")).rows[0].age,40);
+ await db.exec(`update mairie_conseil_municipal set metier='Technicien agricole',presentation='Un texte personnel' where id='rudy'`);
+ assert.deepEqual((await db.query<{metier:string;presentation:string}>("select metier,presentation from mairie_conseil_public() where id='rudy'")).rows[0],{metier:'Technicien agricole',presentation:'Un texte personnel'});
+
  await db.exec(`update mairie_conseil_municipal set date_naissance=date_naissance+1 where id='rudy'`);
  assert.equal((await db.query<{age:number}>("select age from mairie_conseil_public() where id='rudy'")).rows[0].age,39);
  assert.equal((await db.query('select * from mairie_actualites')).rows.length,3);
@@ -75,7 +79,7 @@ test('SQL réel : administratrice unique, isolation des brouillons et Storage',a
  assert.equal((await db.query('select * from storage.objects')).rows.length,1);
  assert.equal((await db.query<{saison:string}>("select apparence->>'saison' as saison from mairie_parametres_site")).rows[0].saison,'premier_mai');
  const publicRudy=(await db.query<{age:number;nom:string}>("select age,nom from mairie_conseil_public() where id='rudy'")).rows[0];assert.equal(publicRudy.age,39);assert.equal(publicRudy.nom,'Rudy Petit');
- await db.exec('reset role');await db.exec(appearanceMigration);await db.exec(councilMigration);assert.equal((await db.query<{afficher_age:boolean}>("select afficher_age from mairie_conseil_municipal where id='rudy'")).rows[0].afficher_age,true);
+ await db.exec('reset role');await db.exec(appearanceMigration);await db.exec(councilPresentation);assert.equal((await db.query<{afficher_age:boolean}>("select afficher_age from mairie_conseil_municipal where id='rudy'")).rows[0].afficher_age,true);
  assert.equal((await db.query<{saison:string}>("select apparence->>'saison' as saison from mairie_parametres_site")).rows[0].saison,'premier_mai');
  }finally{await db.close();}
 });

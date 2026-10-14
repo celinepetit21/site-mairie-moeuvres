@@ -134,13 +134,13 @@ export async function saveCouncilMember(id:string,_state:ActionState,form:FormDa
  const birth=String(form.get('date_naissance')??'');
  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  if(birth&&(!/^\d{4}-\d{2}-\d{2}$/.test(birth)||birth<'1900-01-01'||birth>today||Number.isNaN(Date.parse(birth))||new Date(birth).toISOString().slice(0,10)!==birth))return {error:'Renseignez une date de naissance valide, non future.'};
- const parsed=z.object({nom:z.string().trim().min(1).max(100),fonction:z.string().trim().min(1).max(100),groupe:z.enum(['maire','adjoints','conseillers']),ordre:z.coerce.number().int().min(0).max(1000)}).safeParse(Object.fromEntries(form));
+ const parsed=z.object({metier:z.string().trim().max(160),presentation:z.string().trim().max(2500),nom:z.string().trim().min(1).max(100),fonction:z.string().trim().min(1).max(100),groupe:z.enum(['maire','adjoints','conseillers']),ordre:z.coerce.number().int().min(0).max(1000)}).safeParse(Object.fromEntries(form));
  if(!parsed.success)return {error:'Vérifiez le nom, la fonction et l’ordre.'};
  const photo=String(form.get('photo_id')??'');
  if(photo){if(!uuid.safeParse(photo).success)return {error:'Photo invalide.'};const {data,error}=await client.from('mairie_galerie_photos').select('id').eq('id',photo).eq('statut','publie').lte('published_at',new Date().toISOString()).maybeSingle();if(error||!data)return {error:'Choisissez une photo publiée.'};}
  if(form.get('afficher_age')==='on'&&!birth)return {error:'Renseignez une date avant d’afficher l’âge.'};
  const {error}=await client.from('mairie_conseil_municipal').update({...parsed.data,date_naissance:birth||null,afficher_age:form.get('afficher_age')==='on',photo_id:photo||null,actif:form.get('actif')==='on'}).eq('id',id).select('id').single();
- if(error)return {error:'Enregistrement impossible. Vérifiez que le SQL 05 a été exécuté.'};
+ if(error)return {error:'Enregistrement impossible. Vérifiez que les SQL 05 et 06 ont été exécutés.'};
  revalidatePath('/commune/conseil-municipal');revalidatePath('/admin/conseil-municipal');
  redirect('/admin/conseil-municipal?succes=1');
 }
