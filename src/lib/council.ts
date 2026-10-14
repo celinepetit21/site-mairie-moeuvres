@@ -8,7 +8,7 @@ export const deputies: CouncilMember[] = [
  { name: 'Rudy Petit', role: '3e adjoint' },
 ];
 export const councillors: CouncilMember[] = [
- { name: 'Marion Cappelaere', role: 'Conseillère municipale' },
+ { name: 'Marion Roge', role: 'Conseillère municipale' },
  { name: 'Marcelle Guillot', role: 'Conseillère municipale' },
  { name: 'Noémie Lefebvre', role: 'Conseillère municipale' },
  { name: 'Thibault Silvain', role: 'Conseiller municipal' },
