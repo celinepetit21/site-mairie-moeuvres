@@ -4,7 +4,7 @@ import { type CouncilMember } from '@/lib/council';
 import { publicCouncil } from '@/lib/council-data';
 export const metadata = { title: 'Le conseil municipal — Mœuvres', description: 'Le maire, les adjoints et le conseil municipal de Mœuvres.' };
 function Portrait({member}:{member:CouncilMember}) {
- return member.photo ? <img className="council-avatar" src={member.photo} alt={member.name} style={{objectFit:'contain'}}/> : <span className="council-avatar" aria-hidden="true">{member.name.split(' ').map(part=>part[0]).join('')}</span>;
+ return member.photo ? <div className="council-portrait"><img src={member.photo} alt={member.name}/></div> : <span className="council-avatar" aria-hidden="true">{member.name.split(' ').map(part=>part[0]).join('')}</span>;
 }
 function Members({members}:{members:CouncilMember[]}) {
  return <div className="council-grid">{members.map(member=><article className="council-card" key={member.name}><Portrait member={member}/><h3>{member.name}</h3><p className="council-role">{member.role}</p>{member.age!=null&&<p className="council-age">{member.age} ans</p>}</article>)}</div>;
