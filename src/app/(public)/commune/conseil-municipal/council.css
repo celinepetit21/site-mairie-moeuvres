@@ -14,3 +14,7 @@
 @media(max-width:520px){.council-dynamic .team-grid,.council-dynamic .team-mayor{grid-template-columns:1fr}.council-dynamic .team-mayor .team-photo{height:280px}.council-dynamic .team-card .team-photo{height:280px}}
 @media(prefers-reduced-motion:no-preference){.council-dynamic .team-card{transition:transform .18s,box-shadow .18s}.council-dynamic .team-card:hover{transform:translateY(-3px);box-shadow:0 10px 25px #344a6012}}
 @media print{.council-dynamic .team-mayor-motif{display:none}.council-dynamic .team-card{box-shadow:none;break-inside:avoid}.council-dynamic .team-message p{color:black}}
+
+/* Lecture plus confortable du texte du maire uniquement. */
+.council-dynamic .team-mayor .team-message p{font-size:1.1rem;line-height:1.85;color:var(--ink)}
+@media(max-width:520px){.council-dynamic .team-mayor .team-message p{font-size:1.05rem;line-height:1.8}}
