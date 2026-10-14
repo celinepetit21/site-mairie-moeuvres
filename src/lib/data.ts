@@ -1,7 +1,7 @@
 import 'server-only';
 import { publicClient } from './supabase/server';
 import { sections, type Section, type Content, type Asset, type Settings } from './types';
-export const defaultSettings: Settings = {nom_commune:'Mœuvres',adresse:'59400 Mœuvres',telephone:'',email:'',horaires:'Horaires à renseigner',photo_mairie_id:null};
+export const defaultSettings: Settings = {nom_commune:'Mœuvres',slogan:'Petit village, grande énergie',adresse:'59400 Mœuvres',telephone:'',email:'',horaires:'Horaires à renseigner',photo_mairie_id:null};
 export async function published(section:Section, limit=100): Promise<Content[]> {
  const client=publicClient(); if (!client) return [];
  let query=client.from(sections[section].table).select('*').eq('statut','publie').lte('published_at',new Date().toISOString());
@@ -12,7 +12,7 @@ export async function published(section:Section, limit=100): Promise<Content[]> 
 }
 export async function settings():Promise<Settings> {
  const client=publicClient();if(!client)return defaultSettings;
- const {data,error}=await client.from('mairie_parametres_site').select('nom_commune,adresse,telephone,email,horaires,photo_mairie_id').eq('id',true).maybeSingle();
+ const {data,error}=await client.from('mairie_parametres_site').select('nom_commune,slogan,adresse,telephone,email,horaires,photo_mairie_id').eq('id',true).maybeSingle();
  if(error) throw new Error('La configuration du site est indisponible.');
  return data as Settings ?? defaultSettings;
 }

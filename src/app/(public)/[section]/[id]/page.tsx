@@ -1,12 +1,25 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { publicClient } from '@/lib/supabase/server';
-import { isSection,sections,type Content } from '@/lib/types';
+import { isSection,sections,pageCategories,type Content } from '@/lib/types';
 import { uuid } from '@/lib/validation';
-import { dateLabel } from '@/lib/data';
+import { dateLabel,publicAssets } from '@/lib/data';
+import { ShareActions } from '@/components/share-actions';
+import { cache } from 'react';
+const getItem=cache(async(section:string,id:string)=>{
+ if(!isSection(section)||!uuid.safeParse(id).success)notFound();
+ const client=publicClient();if(!client)notFound();
+ const {data,error}=await client.from(sections[section].table).select('*').eq('id',id).eq('statut','publie').lte('published_at',new Date().toISOString()).maybeSingle();
+ if(error)throw new Error('Ce contenu est momentanément indisponible.');if(!data)notFound();return data as Content;
+});
+export async function generateMetadata({params}:{params:Promise<{section:string;id:string}>}){
+ const {section,id}=await params;const item=await getItem(section,id);return {title:item.titre,description:item.resume||item.contenu.slice(0,160)};
+}
 export default async function PublicDetail({params}:{params:Promise<{section:string;id:string}>}){
- const {section,id}=await params;if(!isSection(section)||!uuid.safeParse(id).success)notFound();
- const client=publicClient();if(!client)notFound();const {data,error}=await client.from(sections[section].table).select('*').eq('id',id).eq('statut','publie').lte('published_at',new Date().toISOString()).maybeSingle();
- if(error)throw new Error('Ce contenu est momentanément indisponible.');if(!data)notFound();const item=data as Content;
- return <main id="main" className="container public-page article"><Link href={`/${section}`} className="back-link">← {sections[section].title}</Link><p className="eyebrow">{dateLabel(item.published_at)}</p><h1>{item.titre}</h1>{item.resume&&<p className="article-intro">{item.resume}</p>}{section==='evenements'&&<div className="info-band"><div><strong>{dateLabel(item.date_debut)}</strong>{item.date_fin&&<p>Fin : {dateLabel(item.date_fin)}</p>}{item.lieu&&<p>{item.lieu}</p>}</div></div>}<div className="article-body preserve">{item.contenu}</div></main>;
+ const {section,id}=await params;const item=await getItem(section,id);
+ const [photos,documents]=await Promise.all([item.photo_id?publicAssets('photos'):Promise.resolve([]),item.document_id?publicAssets('documents'):Promise.resolve([])]);
+ const photo=photos.find(p=>p.id===item.photo_id);const document=documents.find(d=>d.id===item.document_id);
+ const back=section==='pages'?`/${item.categorie??'commune'}`:`/${section}`;
+ const label=section==='pages'?pageCategories[item.categorie??'commune']:sections[section as keyof typeof sections].title;
+ return <main id="main" className="container public-page article"><Link href={back} className="back-link">← {label}</Link><p className="eyebrow">{dateLabel(item.published_at)}</p><h1>{item.titre}</h1>{item.resume&&<p className="article-intro">{item.resume}</p>}{photo&&<figure className="article-photo"><img src={`/fichiers/photos/${photo.id}`} alt={photo.titre}/></figure>}{section==='evenements'&&<div className="info-band"><div><strong>{dateLabel(item.date_debut)}</strong>{item.date_fin&&<p>Fin : {dateLabel(item.date_fin)}</p>}{item.lieu&&<p>{item.lieu}</p>}<Link href={`/calendrier/${item.id}`} className="button secondary">Ajouter à mon calendrier</Link></div></div>}<div className="article-body preserve">{item.contenu}</div>{document&&<div className="attachment"><h2>Document associé</h2><a className="button" href={`/fichiers/documents/${document.id}`} target="_blank" rel="noopener">Ouvrir le PDF : {document.titre}</a></div>}<ShareActions title={item.titre}/></main>;
 }
