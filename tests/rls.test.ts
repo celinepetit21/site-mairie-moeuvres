@@ -19,6 +19,9 @@ test('SQL réel : administratrice unique, isolation des brouillons et Storage',a
  insert into auth.users values('${admin}'),('${other}');`);
  const sql=await readFile(new URL('../supabase/01-schema.sql',import.meta.url),'utf8');await db.exec(sql);await db.exec(sql); // script réexécutable
  const migration=await readFile(new URL('../supabase/03-evolution-site.sql',import.meta.url),'utf8');await db.exec(migration);await db.exec(migration);
+ const appearanceMigration=await readFile(new URL('../supabase/04-apparence.sql',import.meta.url),'utf8');await db.exec(appearanceMigration);await db.exec(appearanceMigration);
+ await assert.rejects(()=>db.exec(`update mairie_parametres_site set apparence=jsonb_set(apparence,'{boutons}','"not-a-color"'::jsonb)`));
+ await assert.rejects(()=>db.exec(`update mairie_parametres_site set apparence=jsonb_set(apparence,'{saison}','null'::jsonb)`));
  await db.exec(`insert into public.mairie_administrateurs_site(user_id) values('${admin}');`);
  await assert.rejects(()=>db.exec(`insert into public.mairie_administrateurs_site(user_id) values('${other}')`));
  await db.exec(`insert into mairie_actualites(titre,contenu,statut,published_at) values('Publié','Texte public','publie',now()),('Brouillon','Secret','brouillon',null),('Publication future','Texte future','publie',now()+interval '1 day');
@@ -27,6 +30,7 @@ test('SQL réel : administratrice unique, isolation des brouillons et Storage',a
  insert into storage.objects(bucket_id,name) values('mairie-documents','public.pdf'),('mairie-documents','secret.pdf');`);
  await db.exec(`insert into mairie_pages(titre,contenu,statut,published_at) values('Page publique','Texte','publie',now()),('Page privée','Secret','brouillon',null),('Page future','Secret','publie',now()+interval '1 day');`);
  await db.exec(`set role anon;select set_config('request.jwt.claim.sub','',false);`);
+ await assert.rejects(()=>db.exec(`update mairie_parametres_site set apparence=jsonb_set(apparence,'{saison}','"noel"'::jsonb)`));
  assert.deepEqual((await db.query('select titre from mairie_pages')).rows,[{titre:'Page publique'}]);
  assert.deepEqual((await db.query('select titre from mairie_actualites')).rows,[{titre:'Publié'}]);
  assert.deepEqual((await db.query('select titre from mairie_informations_municipales')).rows,[{titre:'Active'}]);
@@ -38,7 +42,8 @@ test('SQL réel : administratrice unique, isolation des brouillons et Storage',a
  assert.equal((await db.query('select * from mairie_actualites')).rows.length,1);
  assert.equal((await db.query('select * from mairie_pages')).rows.length,1);
  await assert.rejects(()=>db.exec(`insert into mairie_pages(titre,contenu) values('Intrusion','Refus')`));
- await db.exec(`update mairie_pages set contenu='Intrusion';delete from mairie_pages;`);
+ await db.exec(`update mairie_pages set contenu='Intrusion';delete from mairie_pages;update mairie_parametres_site set apparence=jsonb_set(apparence,'{saison}','"noel"'::jsonb);`);
+ assert.equal((await db.query<{saison:string}>("select apparence->>'saison' as saison from mairie_parametres_site")).rows[0].saison,'aucune');
  assert.equal((await db.query<{contenu:string}>('select contenu from mairie_pages')).rows[0].contenu,'Texte');
  await assert.rejects(()=>db.exec(`insert into mairie_administrateurs_site(user_id) values('${other}')`));
  await assert.rejects(()=>db.exec(`insert into mairie_actualites(titre,contenu) values('Intrusion','Refus')`));
@@ -49,6 +54,8 @@ test('SQL réel : administratrice unique, isolation des brouillons et Storage',a
  assert.deepEqual((await db.query('select mairie_est_administrateur() as allowed')).rows,[{allowed:true}]);
  assert.equal((await db.query('select * from mairie_actualites')).rows.length,3);
  assert.equal((await db.query('select * from mairie_pages')).rows.length,3);
+ await db.exec(`update mairie_parametres_site set apparence=jsonb_set(apparence,'{saison}','"premier_mai"'::jsonb);`);
+ assert.equal((await db.query<{saison:string}>("select apparence->>'saison' as saison from mairie_parametres_site")).rows[0].saison,'premier_mai');
  await db.exec(`update mairie_pages set statut='publie',published_at=now() where titre='Page privée';`);
  assert.equal((await db.query('select * from storage.objects')).rows.length,2);
  await db.exec(`update mairie_actualites set statut='publie',published_at=now() where titre='Brouillon';insert into storage.objects(bucket_id,name) values('mairie-photos','admin.jpg');`);
@@ -57,5 +64,8 @@ test('SQL réel : administratrice unique, isolation des brouillons et Storage',a
  assert.equal((await db.query('select * from mairie_actualites')).rows.length,2);
  assert.equal((await db.query('select * from mairie_pages')).rows.length,2);
  assert.equal((await db.query('select * from storage.objects')).rows.length,1);
+ assert.equal((await db.query<{saison:string}>("select apparence->>'saison' as saison from mairie_parametres_site")).rows[0].saison,'premier_mai');
+ await db.exec('reset role');await db.exec(appearanceMigration);
+ assert.equal((await db.query<{saison:string}>("select apparence->>'saison' as saison from mairie_parametres_site")).rows[0].saison,'premier_mai');
  }finally{await db.close();}
 });

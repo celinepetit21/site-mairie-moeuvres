@@ -1,8 +1,10 @@
 import 'server-only';
+import { cache } from 'react';
+import { defaultAppearance,getAppearance } from './appearance';
 import { logSupabaseError } from './supabase/diagnostics';
 import { publicClient } from './supabase/server';
 import { sections, type Section, type Content, type Asset, type Settings } from './types';
-export const defaultSettings: Settings = {nom_commune:'Mœuvres',slogan:'Petit village, grande énergie',adresse:'59400 Mœuvres',telephone:'',email:'',horaires:'Horaires à renseigner',photo_mairie_id:null};
+export const defaultSettings: Settings = {nom_commune:'Mœuvres',slogan:'Petit village, grande énergie',adresse:'59400 Mœuvres',telephone:'',email:'',horaires:'Horaires à renseigner',photo_mairie_id:null,apparence:defaultAppearance};
 export async function published(section:Section, limit=100): Promise<Content[]> {
  const client=publicClient(); if (!client) return [];
  let query=client.from(sections[section].table).select('*').eq('statut','publie').lte('published_at',new Date().toISOString());
@@ -11,12 +13,12 @@ export async function published(section:Section, limit=100): Promise<Content[]> 
  if(error){logSupabaseError(`contents:${section}`,error);throw new Error('Les contenus municipaux sont temporairement indisponibles.');}
  return (data??[]) as Content[];
 }
-export async function settings():Promise<Settings> {
+export const settings=cache(async():Promise<Settings> => {
  const client=publicClient();if(!client)return defaultSettings;
- const {data,error}=await client.from('mairie_parametres_site').select('nom_commune,slogan,adresse,telephone,email,horaires,photo_mairie_id').eq('id',true).maybeSingle();
+ const {data,error}=await client.from('mairie_parametres_site').select('*').eq('id',true).maybeSingle();
  if(error){logSupabaseError('settings',error);throw new Error('La configuration du site est indisponible.');}
- return data as Settings ?? defaultSettings;
-}
+ return data?{...data,apparence:getAppearance(data.apparence)} as Settings:defaultSettings;
+});
 export async function publicAssets(kind:'documents'|'photos'):Promise<Asset[]> {
  const client=publicClient();if(!client)return [];
  const {data,error}=await client.from(kind==='documents'?'mairie_documents':'mairie_galerie_photos').select('*').eq('statut','publie').lte('published_at',new Date().toISOString()).order('created_at',{ascending:false});

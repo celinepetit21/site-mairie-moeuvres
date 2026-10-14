@@ -2,6 +2,7 @@
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { appearanceSchema } from '@/lib/appearance';
 import { requireAdmin } from '@/lib/auth';
 import { serverClient } from '@/lib/supabase/server';
 import { logSupabaseError, diagnostic } from '@/lib/supabase/diagnostics';
@@ -115,4 +116,14 @@ export async function saveSettings(_state:ActionState,form:FormData):Promise<Act
  if(photo){const {data,error}=await client.from('mairie_galerie_photos').select('id').eq('id',photo).eq('statut','publie').single();if(error||!data)return {error:'Choisissez une photo publiée.'};}
  const {error}=await client.from('mairie_parametres_site').update({...parsed.data,photo_mairie_id:photo||null}).eq('id',true).select('id').single();
  if(error)return {error:'Enregistrement impossible.'};revalidatePath('/');redirect('/admin/parametres?succes=enregistre');
+}
+
+export async function saveAppearance(_state:ActionState,form:FormData):Promise<ActionState>{
+ const {client}=await requireAdmin();
+ const parsed=appearanceSchema.safeParse(Object.fromEntries(form));
+ if(!parsed.success)return {error:parsed.error.issues[0].message};
+ const {error}=await client.from('mairie_parametres_site').update({apparence:parsed.data}).eq('id',true).select('id').single();
+ if(error){logSupabaseError('appearance_save',error);return {error:'Enregistrement impossible. Vérifiez que le contenu du fichier 04-apparence.sql a été exécuté dans Supabase.'};}
+ revalidatePath('/','layout');revalidatePath('/admin/parametres');
+ redirect('/admin/parametres?succes=apparence#apparence');
 }

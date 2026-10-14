@@ -17,4 +17,5 @@ export type Content = {
 };
 export type AssetKind = 'documents' | 'photos';
 export type Asset = { id: string; titre: string; chemin: string; mime_type: string; taille: number; statut: 'brouillon' | 'publie'; published_at: string | null; created_at: string };
-export type Settings = { nom_commune: string; slogan: string; adresse: string; telephone: string; email: string; horaires: string; photo_mairie_id: string | null };
+import type { Appearance } from './appearance';
+export type Settings = { apparence?: Appearance; nom_commune: string; slogan: string; adresse: string; telephone: string; email: string; horaires: string; photo_mairie_id: string | null };
