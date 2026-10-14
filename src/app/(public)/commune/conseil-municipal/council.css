@@ -24,3 +24,15 @@
 .council-dynamic .team-mayor-motif{display:none}
 @media(max-width:760px){.council-dynamic .team-mayor{grid-template-columns:145px minmax(0,1fr);padding:22px;gap:22px}.council-dynamic .team-mayor .team-photo{height:195px}.council-dynamic .team-mayor-paragraphs{column-count:1}.council-dynamic .team-mayor-paragraphs p{font-size:.98rem;line-height:1.7}}
 @media(max-width:420px){.council-dynamic .team-mayor{grid-template-columns:1fr}.council-dynamic .team-mayor .team-photo{width:170px;height:220px;margin:auto}.council-dynamic .team-mayor-copy{text-align:center}.council-dynamic .team-mayor-copy .team-facts p{justify-content:center}}
+
+/* Fonds des portraits associés au thème actif, sans modifier les photographies. */
+.council-dynamic{--portrait-tone:var(--icon-color);--portrait-second:var(--button-bg)}
+.council-dynamic[data-season="octobre_rose"],.council-dynamic[data-season="saint_valentin"]{--portrait-tone:var(--decor-color);--portrait-second:#edabc3}
+.council-dynamic[data-season="halloween"]{--portrait-tone:#d47726;--portrait-second:var(--decor-color)}
+.council-dynamic[data-season="noel"]{--portrait-tone:var(--frame-color);--portrait-second:var(--decor-color)}
+.council-dynamic[data-season="nouvel_an"]{--portrait-tone:#c6a666;--portrait-second:var(--button-bg)}
+.council-dynamic[data-season="paques"]{--portrait-tone:#e6bc78;--portrait-second:var(--decor-color)}
+.council-dynamic[data-season="premier_mai"]{--portrait-tone:#91b59b;--portrait-second:var(--frame-color)}
+.council-dynamic[data-season="huit_mai"],.council-dynamic[data-season="quatorze_juillet"]{--portrait-tone:#557faf;--portrait-second:#d3777c}
+.council-dynamic[data-season="personnalisee"]{--portrait-tone:var(--decor-color);--portrait-second:var(--icon-color)}
+.council-dynamic .team-photo,.council-dynamic .team-mayor .team-photo,.council-dynamic .team-card .team-photo{background:radial-gradient(ellipse at top right,color-mix(in srgb,var(--portrait-tone) 27%,white),transparent 70%),linear-gradient(145deg,#fff,color-mix(in srgb,var(--portrait-second) 14%,white));border:1px solid color-mix(in srgb,var(--portrait-tone) 25%,white)}
