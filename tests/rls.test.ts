@@ -33,7 +33,7 @@ test('SQL réel : administratrice unique, isolation des brouillons et Storage',a
  await db.exec(`set role anon;select set_config('request.jwt.claim.sub','',false);`);
  await assert.rejects(()=>db.exec(`update mairie_parametres_site set apparence=jsonb_set(apparence,'{saison}','"noel"'::jsonb)`));
  await assert.rejects(()=>db.query('select date_naissance from mairie_conseil_municipal'));
- const councilPublic=await db.query('select * from mairie_conseil_public()');assert.equal(councilPublic.rows.length,10);assert.equal('date_naissance' in councilPublic.rows[0],false);
+ const councilPublic=await db.query<Record<string,unknown>>('select * from mairie_conseil_public()');assert.equal(councilPublic.rows.length,10);assert.equal('date_naissance' in councilPublic.rows[0],false);
  assert.deepEqual((await db.query('select titre from mairie_pages')).rows,[{titre:'Page publique'}]);
  assert.deepEqual((await db.query('select titre from mairie_actualites')).rows,[{titre:'Publié'}]);
  assert.deepEqual((await db.query('select titre from mairie_informations_municipales')).rows,[{titre:'Active'}]);
