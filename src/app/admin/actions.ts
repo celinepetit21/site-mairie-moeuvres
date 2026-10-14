@@ -51,10 +51,25 @@ export async function saveContent(sectionValue:string,id:string|null,_state:Acti
   if(value){const {data,error}=await client.from(table).select('id').eq('id',value).eq('statut','publie').lte('published_at',new Date().toISOString()).maybeSingle();if(error||!data)return {error:'Le fichier choisi doit être publié.'};}
   references[field]=value||null;
  }
+ const associationFields:Record<string,unknown>={};
+ if(sectionValue==='pages'&&categorie==='associations'){
+  const safeLink=z.string().max(2000).refine(v=>!v||(/^https:\/\//i.test(v)&&(()=>{try{return !new URL(v).username&&!new URL(v).password;}catch{return false;}})()),'Utilisez un lien HTTPS valide.');
+  const links=z.object({facebook_url:safeLink,helloasso_url:safeLink}).safeParse({facebook_url:String(form.get('facebook_url')??''),helloasso_url:String(form.get('helloasso_url')??'')});
+  if(!links.success)return {error:'Les liens Facebook et HelloAsso doivent commencer par https://.'};
+  const events=[];
+  for(let i=0;i<6;i++){
+   const title=String(form.get(`event_${i}_title`)??'').trim();const date=String(form.get(`event_${i}_date`)??'');const label=String(form.get(`event_${i}_label`)??'').trim();const url=String(form.get(`event_${i}_url`)??'').trim();const photo=String(form.get(`event_${i}_photo`)??'');
+   if(!title&&!date&&!label&&!url&&!photo)continue;
+   if(!title||title.length>180||label.length>250||!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date))||new Date(date).toISOString().slice(0,10)!==date||!safeLink.safeParse(url).success)return {error:`Vérifiez le titre, la date et le lien de l’événement ${i+1}.`};
+   if(photo){if(!uuid.safeParse(photo).success)return {error:'Affiche invalide.'};const {data,error}=await client.from('mairie_galerie_photos').select('id').eq('id',photo).eq('statut','publie').lte('published_at',new Date().toISOString()).maybeSingle();if(error||!data)return {error:'Publiez l’affiche avant de la sélectionner.'};}
+   events.push({title,date,label,url,photo_id:photo||null});
+  }
+  Object.assign(associationFields,links.data,{association_evenements:events});
+ }
  const {date_debut,date_fin,lieu,...base}=parsed.data;
  let oldPublished:string|null=null;
  if(id){const {data,error}=await client.from(sections[sectionValue].table).select('published_at').eq('id',id).single();if(error)return {error:'Ce contenu est introuvable.'};oldPublished=data.published_at;}
- const payload={...base,published_at:base.statut==='publie'?(oldPublished??new Date().toISOString()):null,...references,...(sectionValue==='pages'?{categorie}:sectionValue==='actualites'?{}:{date_debut,date_fin,lieu})};
+ const payload={...base,...associationFields,published_at:base.statut==='publie'?(oldPublished??new Date().toISOString()):null,...references,...(sectionValue==='pages'?{categorie}:sectionValue==='actualites'?{}:{date_debut,date_fin,lieu})};
  const query=id?client.from(sections[sectionValue].table).update(payload).eq('id',id):client.from(sections[sectionValue].table).insert(payload);
  const {error}=await query.select('id').single();
  if(error)return {error:'Enregistrement impossible. Vérifiez le schéma SQL et vos autorisations.'};

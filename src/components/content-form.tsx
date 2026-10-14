@@ -1,3 +1,4 @@
+import { associationLinks } from '@/lib/association-links';
 import { ActionForm } from './action-form';
 import { saveContent, deleteContent } from '@/app/admin/actions';
 import { pageCategories, type Section, type Content, type Asset } from '@/lib/types';
@@ -8,6 +9,7 @@ export async function ContentForm({section,item}:{section:Section;item?:Content}
  const {client}=await requireAdmin();
  const [{data:photos,error:photoError},{data:documents,error:docError}]=await Promise.all([client.from('mairie_galerie_photos').select('*').eq('statut','publie'),client.from('mairie_documents').select('*').eq('statut','publie')]);
  if(photoError||docError)throw new Error('Impossible de charger les fichiers.');
+ const resources=item?associationLinks[item.id]:undefined;const events=item?.association_evenements??resources?.events??[];
  return <><ActionForm action={saveContent.bind(null,section,item?.id??null)}>
  {item&&<p><Link className="text-link" href={`/admin/apercu/${section}/${item.id}`}>Prévisualiser le contenu enregistré</Link></p>}
  {item?.statut==='publie'&&<p><Link className="text-link" href={`/${section}/${item.id}`} target="_blank" rel="noopener">Voir le contenu publié ↗</Link></p>}

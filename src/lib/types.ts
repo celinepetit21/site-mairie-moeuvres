@@ -12,7 +12,7 @@ export function isSection(value: string): value is Section { return value in sec
 export type Content = {
  id: string; titre: string; resume: string; contenu: string; statut: 'brouillon' | 'publie';
  published_at: string | null; created_at: string; updated_at: string;
- categorie?: PageCategory; photo_id?: string | null; document_id?: string | null;
+ association_evenements?: {title:string;date:string;label:string;url?:string;photo_id?:string|null}[]|null; facebook_url?:string|null;helloasso_url?:string|null; categorie?: PageCategory; photo_id?: string | null; document_id?: string | null;
  date_debut?: string | null; date_fin?: string | null; lieu?: string;
 };
 export type AssetKind = 'documents' | 'photos';
