@@ -112,3 +112,5 @@
 .site-theme .button.danger{background:#a43737;color:white}.site-theme .button.danger:hover{background:#892b2b;color:white}
 .site-theme .admin-welcome,.site-theme .admin-avatar{background:color-mix(in srgb,var(--button-bg) 8%,white)}
 .site-theme .admin-sidebar nav a:hover{background:color-mix(in srgb,var(--button-bg) 8%,white)}
+
+.council-age{color:var(--muted);font-size:.85rem;margin:8px 0 0}.council-editor summary{font-weight:600;color:var(--heading-color)}.council-editor[open] summary{margin-bottom:26px}.action-form .checkbox-label{flex-direction:row;align-items:center;gap:12px}.action-form .checkbox-label input{width:20px;min-height:20px;height:20px;flex-shrink:0}.council-admin-photo{display:block;width:160px;height:180px;object-fit:contain;background:#f5f1e9;border-radius:8px;margin-bottom:15px}
