@@ -4,19 +4,28 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { requireAdmin } from '@/lib/auth';
 import { serverClient } from '@/lib/supabase/server';
+import { logSupabaseError, diagnostic } from '@/lib/supabase/diagnostics';
 import { supabaseConfig } from '@/lib/supabase/config';
 import { sections, isSection, isPageCategory, type AssetKind } from '@/lib/types';
 import { contentSchema, uuid, parisToISO, validateDates, detectFile } from '@/lib/validation';
 export type ActionState = {error?:string};
 export async function login(_state:ActionState,form:FormData):Promise<ActionState> {
- if(!supabaseConfig() || !process.env.ADMIN_USER_ID)return {error:'Renseignez d’abord les variables dans .env.local.'};
+ if(!supabaseConfig() || !process.env.ADMIN_USER_ID)return {error:'Configuration à compléter : vérifiez les variables Supabase et ADMIN_USER_ID dans Vercel pour le site en ligne, ou dans .env.local en local.'};
  const parsed=z.object({email:z.email(),password:z.string().min(1).max(200)}).safeParse(Object.fromEntries(form));
  if(!parsed.success)return {error:'Vérifiez votre adresse e-mail et votre mot de passe.'};
  const client=await serverClient();
  const {data,error}=await client.auth.signInWithPassword(parsed.data);
- if(error || !data.user)return {error:'Connexion impossible. Vérifiez vos identifiants ou réessayez dans quelques minutes.'};
+ if(error || !data.user){
+  logSupabaseError('login',error);
+  const reason=diagnostic(error).reason;
+  if(reason==='invalid_api_key')return {error:'La clé publique Supabase configurée dans Vercel est refusée. Vérifiez qu’elle appartient au même projet que l’URL Supabase, puis redéployez.'};
+  if(reason==='email_not_confirmed')return {error:'L’adresse du compte doit être confirmée dans Supabase Auth.'};
+  if(reason==='network_error')return {error:'Supabase est injoignable. Vérifiez l’URL du projet et son état.'};
+  return {error:'Connexion impossible. Vérifiez vos identifiants ou réessayez dans quelques minutes.'};
+ }
  const {data:allowed,error:accessError}=await client.rpc('mairie_est_administrateur');
  if(data.user.id!==process.env.ADMIN_USER_ID || accessError || allowed!==true) {
+  if(accessError)logSupabaseError('admin_authorization',accessError);
   await client.auth.signOut();return {error:'Ce compte ne dispose pas d’un accès à l’administration.'};
  }
  redirect('/admin');

@@ -1,6 +1,6 @@
 export function supabaseConfig() {
- const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
- const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+ const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+ const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
  if (!url || !key || url.includes('votre-projet')) return null;
  if (key.startsWith('sb_secret_')) throw new Error('Utilisez uniquement une clé Supabase publique.');
  // Une ancienne clé JWT anon est permise ; une service_role est toujours refusée.
