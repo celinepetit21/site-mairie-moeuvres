@@ -1,0 +1,51 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { PGlite } from '@electric-sql/pglite';
+const admin='11111111-1111-4111-8111-111111111111';
+const other='22222222-2222-4222-8222-222222222222';
+test('SQL réel : administratrice unique, isolation des brouillons et Storage',async()=>{
+ const db=new PGlite();
+ try{
+ await db.exec(`create role anon;create role authenticated;create schema auth;create schema storage;
+ create table auth.users(id uuid primary key);
+ create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+ grant usage on schema auth,storage,public to anon,authenticated;
+ grant execute on function auth.uid() to anon,authenticated;
+ create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
+ create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text);
+ alter table storage.objects enable row level security;
+ grant select on storage.objects to anon;grant select,insert,update,delete on storage.objects to authenticated;
+ insert into auth.users values('${admin}'),('${other}');`);
+ const sql=await readFile(new URL('../supabase/01-schema.sql',import.meta.url),'utf8');await db.exec(sql);await db.exec(sql); // script réexécutable
+ await db.exec(`insert into public.mairie_administrateurs_site(user_id) values('${admin}');`);
+ await assert.rejects(()=>db.exec(`insert into public.mairie_administrateurs_site(user_id) values('${other}')`));
+ await db.exec(`insert into mairie_actualites(titre,contenu,statut,published_at) values('Publié','Texte public','publie',now()),('Brouillon','Secret','brouillon',null),('Publication future','Texte future','publie',now()+interval '1 day');
+ insert into mairie_informations_municipales(titre,contenu,statut,published_at,date_debut,date_fin) values('Active','Active','publie',now(),null,null),('Terminée','Terminé','publie',now(),now()-interval '2 day',now()-interval '1 day'),('Pas encore','Future','publie',now(),now()+interval '1 day',null);
+ insert into mairie_documents(titre,chemin,mime_type,taille,statut,published_at) values('Document public','public.pdf','application/pdf',10,'publie',now()),('Document privé','secret.pdf','application/pdf',10,'brouillon',null);
+ insert into storage.objects(bucket_id,name) values('mairie-documents','public.pdf'),('mairie-documents','secret.pdf');`);
+ await db.exec(`set role anon;select set_config('request.jwt.claim.sub','',false);`);
+ assert.deepEqual((await db.query('select titre from mairie_actualites')).rows,[{titre:'Publié'}]);
+ assert.deepEqual((await db.query('select titre from mairie_informations_municipales')).rows,[{titre:'Active'}]);
+ assert.deepEqual((await db.query('select name from storage.objects')).rows,[{name:'public.pdf'}]);
+ await assert.rejects(()=>db.exec(`insert into mairie_actualites(titre,contenu) values('Intrusion','Refus')`));
+ await db.exec(`reset role;set role authenticated;select set_config('request.jwt.claim.sub','${other}',false);`);
+ assert.deepEqual((await db.query('select mairie_est_administrateur() as allowed')).rows,[{allowed:false}]);
+ assert.equal((await db.query('select * from mairie_administrateurs_site')).rows.length,0);
+ assert.equal((await db.query('select * from mairie_actualites')).rows.length,1);
+ await assert.rejects(()=>db.exec(`insert into mairie_administrateurs_site(user_id) values('${other}')`));
+ await assert.rejects(()=>db.exec(`insert into mairie_actualites(titre,contenu) values('Intrusion','Refus')`));
+ await assert.rejects(()=>db.exec(`insert into storage.objects(bucket_id,name) values('mairie-documents','intrusion.pdf')`));
+ await db.exec(`update mairie_actualites set contenu='Intrusion';`);
+ assert.equal((await db.query<{contenu:string}>('select contenu from mairie_actualites')).rows[0].contenu,'Texte public');
+ await db.exec(`reset role;set role authenticated;select set_config('request.jwt.claim.sub','${admin}',false);`);
+ assert.deepEqual((await db.query('select mairie_est_administrateur() as allowed')).rows,[{allowed:true}]);
+ assert.equal((await db.query('select * from mairie_actualites')).rows.length,3);
+ assert.equal((await db.query('select * from storage.objects')).rows.length,2);
+ await db.exec(`update mairie_actualites set statut='publie',published_at=now() where titre='Brouillon';insert into storage.objects(bucket_id,name) values('mairie-photos','admin.jpg');`);
+ await assert.rejects(()=>db.exec('delete from mairie_administrateurs_site'));
+ await db.exec(`reset role;set role anon;select set_config('request.jwt.claim.sub','',false);`);
+ assert.equal((await db.query('select * from mairie_actualites')).rows.length,2);
+ assert.equal((await db.query('select * from storage.objects')).rows.length,1);
+ }finally{await db.close();}
+});

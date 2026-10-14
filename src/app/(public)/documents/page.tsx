@@ -1,0 +1,3 @@
+import { FileText,Download } from 'lucide-react';
+import { publicAssets } from '@/lib/data';
+export default async function Documents(){const rows=await publicAssets('documents');return <main id="main" className="container public-page"><p className="eyebrow">INFORMATIONS PRATIQUES</p><h1>Les documents de la commune</h1><div className="public-list">{rows.map(row=><a key={row.id} className="public-list-card" href={`/fichiers/documents/${row.id}`} target="_blank" rel="noopener"><FileText/><div><h2>{row.titre}</h2><p>PDF · {(row.taille/1024/1024).toFixed(2)} Mo</p></div><Download/></a>)}</div>{!rows.length&&<p className="empty-state">Les documents municipaux seront prochainement disponibles ici.</p>}</main>}
