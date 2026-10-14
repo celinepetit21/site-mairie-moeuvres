@@ -15,6 +15,12 @@
 @media(prefers-reduced-motion:no-preference){.council-dynamic .team-card{transition:transform .18s,box-shadow .18s}.council-dynamic .team-card:hover{transform:translateY(-3px);box-shadow:0 10px 25px #344a6012}}
 @media print{.council-dynamic .team-mayor-motif{display:none}.council-dynamic .team-card{box-shadow:none;break-inside:avoid}.council-dynamic .team-message p{color:black}}
 
-/* Lecture plus confortable du texte du maire uniquement. */
-.council-dynamic .team-mayor .team-message p{font-size:1.1rem;line-height:1.85;color:var(--ink)}
-@media(max-width:520px){.council-dynamic .team-mayor .team-message p{font-size:1.05rem;line-height:1.8}}
+/* Fiche du maire : identité en haut et lecture sur toute la largeur. */
+.council-dynamic .team-mayor{grid-template-columns:200px minmax(0,1fr);gap:28px 34px;padding:30px;background:linear-gradient(130deg,#fff,#faf8f3);border-color:var(--line);border-top:4px solid var(--frame-color)}
+.council-dynamic .team-mayor .team-photo{height:240px;background:#f5f1eb}.council-dynamic .team-mayor h2{font-size:clamp(2rem,3vw,2.6rem)}
+.council-dynamic .team-mayor-message{grid-column:1/-1;position:relative;z-index:1;border-top:1px solid var(--line);padding-top:24px}
+.council-dynamic .team-message-label{font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;font-weight:600;color:var(--icon-readable);margin-bottom:18px}
+.council-dynamic .team-mayor-paragraphs{column-count:2;column-gap:38px}.council-dynamic .team-mayor-paragraphs p{font-size:1rem;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);margin:0 0 18px;break-inside:avoid}
+.council-dynamic .team-mayor-motif{display:none}
+@media(max-width:760px){.council-dynamic .team-mayor{grid-template-columns:145px minmax(0,1fr);padding:22px;gap:22px}.council-dynamic .team-mayor .team-photo{height:195px}.council-dynamic .team-mayor-paragraphs{column-count:1}.council-dynamic .team-mayor-paragraphs p{font-size:.98rem;line-height:1.7}}
+@media(max-width:420px){.council-dynamic .team-mayor{grid-template-columns:1fr}.council-dynamic .team-mayor .team-photo{width:170px;height:220px;margin:auto}.council-dynamic .team-mayor-copy{text-align:center}.council-dynamic .team-mayor-copy .team-facts p{justify-content:center}}
