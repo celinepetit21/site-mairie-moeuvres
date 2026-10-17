@@ -53,7 +53,7 @@ export function ApplicationPreview() {
     <a className="unified-skip" href="#application-content">Aller au contenu</a>
     <div className="unified-demo"><Sparkles size={15}/><span>PROJET À DÉCOUVRIR</span><span className="unified-demo-note">Maquette interactive · aucune donnée réelle</span></div>
     <header className="unified-header">
-      <button className="unified-brand" onClick={() => changeView('public')} aria-label="Mœuvres, accueil de la maquette"><span className="unified-crest"><Landmark size={26}/></span><span>MŒUVRES<small>COMMUNE DU NORD<br/>AU CŒUR DE L’ENCLAVE</small></span></button>
+      <button className="unified-brand" onClick={() => changeView('public')} aria-label="Mœuvres, accueil de la maquette"><span className="unified-crest"><Landmark size={26}/></span><span>MŒUVRES<small>Commune du Nord<br/>Au cœur de l’Enclave</small></span></button>
 
       <nav id="unified-nav" aria-label="Navigation de la maquette">
         <button className={view === 'team' ? 'unified-team-link active' : 'unified-team-link'} onClick={() => changeView('team')}><LockKeyhole size={16}/>Espace équipe<ArrowRight size={16}/></button>
@@ -62,7 +62,7 @@ export function ApplicationPreview() {
 
     {view === 'public' ? <main id="application-content" className="unified-public">
       <section className="unified-hero">
-        <div className="unified-hero-copy"><p className="unified-kicker"><span/>BIENVENUE CHEZ VOUS</p><h1>Petit village,<br/><em>grande énergie.</em></h1><p className="unified-lead">La vie de Mœuvres, les rendez-vous du village et vos démarches, réunis au même endroit.</p><div className="unified-hero-actions"><a className="unified-primary" href="#village-services">Découvrir les services<ArrowDown size={17}/></a></div><p className="unified-location"><MapPin size={14}/>Mœuvres · Boursies · Doignies · <a href="#enclave">L’Enclave<ChevronRight size={12}/></a></p></div>
+        <div className="unified-hero-copy"><p className="unified-kicker"><span/>BIENVENUE CHEZ VOUS</p><h1>Petit village,<br/><em>grande énergie.</em></h1><p className="unified-lead">La vie de Mœuvres, les rendez-vous du village et vos démarches, réunis au même endroit.</p><div className="unified-hero-actions"><a className="unified-primary" href="#village-services">Découvrir les services<ArrowDown size={17}/></a></div></div>
         <div className="unified-hero-image"><img src="/salle-des-fetes/facade.png" alt="La façade en briques de la salle des fêtes de Mœuvres" width={1536} height={1024}/><div className="unified-photo-label"><span className="unified-photo-icon"><HeartHandshake size={22}/></span><span><strong>Un village qui se retrouve</strong><small>La salle des fêtes de Mœuvres</small></span></div><span className="unified-image-sticker" aria-hidden="true"><Sparkles size={28}/></span></div>
       </section>
       <section id="village-services" className="unified-services"><div className="unified-section-heading"><div><p className="unified-kicker">AU QUOTIDIEN</p><h2>De quoi avez-vous besoin ?</h2></div><span className="unified-heading-note">Des accès simples, pour chacun.</span></div><div className="unified-service-grid">
