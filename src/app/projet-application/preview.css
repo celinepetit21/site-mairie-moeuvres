@@ -16,3 +16,7 @@
 /* Un seul accès équipe, visible aussi sur téléphone. */
 .unified-header nav{margin-left:auto}
 @media(max-width:700px){.unified-header{flex-wrap:nowrap;padding:18px 16px;gap:10px}.unified-brand{gap:8px;font-size:18px}.unified-brand small{font-size:6px;letter-spacing:.12em}.unified-crest{width:33px;height:37px}.unified-crest svg{width:22px}.unified-header nav{display:flex;width:auto}.unified-header nav .unified-team-link{font-size:10px;gap:7px;padding:11px 10px}.unified-team-link>svg:last-child{display:none}}
+
+/* Nom de la commune plus présent dans l’en-tête. */
+.unified-brand{font-size:32px}
+@media(max-width:700px){.unified-brand{font-size:22px}}
