@@ -1,6 +1,6 @@
 "use client";
 import {useState} from 'react';
-export function HallEnquiry({julie,rudy}:{julie:string;rudy:string}){
+export function HallEnquiry(){
  const [kind,setKind]=useState('particulier');const [dishes,setDishes]=useState(false);const [message,setMessage]=useState('');const [mail,setMail]=useState('');const [copied,setCopied]=useState(false);
  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  const clear=()=>{setMessage('');setMail('');setCopied(false);};
@@ -10,7 +10,7 @@ export function HallEnquiry({julie,rudy}:{julie:string;rudy:string}){
   const date=(s:string)=>s.split('-').reverse().join('/');
   const identity=kind==='association'?`Association : ${value('association')}\nReprésentant : ${value('prenom')} ${value('nom')}\nFonction du représentant : ${value('fonction')}`:`Locataire : ${value('prenom')} ${value('nom')}\nDate de naissance : ${date(value('naissance'))}\nLieu de naissance : ${value('lieu_naissance')}`;
   const text=`Bonjour ${who==='julie'?'Julie':who==='rudy'?'Rudy':'Julie et Rudy'},\n\nJe souhaite obtenir des renseignements pour la salle des fêtes de Mœuvres.\n\n${identity}\nAdresse ${kind==='association'?"de l’association":"du locataire"} : ${value('adresse')}, ${value('cp')} ${value('commune')}\nTéléphone : ${value('telephone')}\nE-mail : ${value('email')}\n\nType d’événement : ${value('occasion')}\nNom de l’événement : ${value('evenement')}\nDébut : ${date(start)} à ${value('heure_debut')}\nFin : ${date(end)} à ${value('heure_fin')}\nNombre de personnes : ${value('nombre')}\n\nOption vaisselle (30 €) : ${dishes?'Oui':'Non'}${dishes?'\nVaisselle souhaitée : '+value('vaisselle_detail'):''}\nOption ménage (50 €) : ${f.get('menage')==='on'?'Oui':'Non'}\n\n${value('message')}\n\nMerci pour votre retour.\n${value('prenom')} ${value('nom')}`;
-  const recipient=who==='julie'?julie:who==='rudy'?rudy:[julie,rudy].filter(Boolean).join(',');setMessage(text);setMail(recipient?'mailto:'+recipient+'?subject='+encodeURIComponent('Demande salle des fêtes — '+start)+'&body='+encodeURIComponent(text):'');setCopied(false);
+  const recipient='maire.adjoints.moeuvres@gmail.com';const destinataire=who==='julie'?'Julie':who==='rudy'?'Rudy':'Julie et Rudy';setMessage(text);setMail('mailto:'+recipient+'?subject='+encodeURIComponent('Salle des fêtes — À l’attention de '+destinataire+' — '+start)+'&body='+encodeURIComponent(text));setCopied(false);
  }
  return <section className="hall-panel" id="demande-renseignements"><h2>Contacter les cogestionnaires</h2><p>Julie Mionnet et Rudy Petit vous accompagnent dans la préparation de votre location.</p><form className="action-form" onSubmit={prepare} onChange={clear}>
  <div className="form-grid"><label>Votre demande concerne<select value={kind} onChange={e=>setKind(e.target.value)}><option value="particulier">Un particulier</option><option value="association">Une association</option></select></label><label>Destinataire<select name="destinataire"><option value="tous">Julie et Rudy</option><option value="julie">Julie</option><option value="rudy">Rudy</option></select></label></div>

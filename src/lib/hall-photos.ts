@@ -15,7 +15,7 @@ export const hallPhotos=[
   "description": "La scène surélevée et son mur de briques."
  },
  {
-  "src": "/salle-des-fetes/cuisine.png",
+  "src": "/salle-des-fetes/cuisine-v2.jpg",
   "title": "Une cuisine équipée",
   "description": "Les espaces de préparation, de cuisson et de plonge."
  },
@@ -53,10 +53,5 @@ export const hallPhotos=[
   "src": "/salle-des-fetes/salle-comptoir.jpg",
   "title": "La salle depuis le comptoir",
   "description": "Une perspective de l’espace de réception."
- },
- {
-  "src": "/salle-des-fetes/salle-lumineuse.png",
-  "title": "L’espace principal",
-  "description": "Les ouvertures en toiture et le sol carrelé."
  }
 ];
