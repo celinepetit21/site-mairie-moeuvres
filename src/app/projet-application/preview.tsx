@@ -57,7 +57,7 @@ export function ApplicationPreview() {
       <button className="unified-brand" onClick={() => changeView('public')} aria-label="Mœuvres, accueil de la maquette"><span className="unified-crest"><Landmark size={26}/></span><span>Mœuvres<small>Commune du Nord · L’Enclave</small></span></button>
 
       <nav id="unified-nav" aria-label="Navigation de la maquette">
-        <button className={view === 'team' ? 'unified-team-link active' : 'unified-team-link'} onClick={() => changeView('team')}><LockKeyhole size={16}/>Espace équipe<ArrowRight size={16}/></button>
+        <button className={view === 'team' ? 'unified-team-link active' : 'unified-team-link'} onClick={() => changeView('team')}><LockKeyhole size={16}/>Espace administration<ArrowRight size={16}/></button>
       </nav>
     </header>
 
