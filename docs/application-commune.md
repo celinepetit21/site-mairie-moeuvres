@@ -52,3 +52,14 @@ Les deux projets Supabase ont aujourd’hui des identités distinctes. Partager 
 ## Limites de l’examen
 
 L’examen porte sur les fichiers et les profils prévus dans le code, pas sur un audit exhaustif de sécurité. Les politiques de base, comptes réellement attribués, secrets et autorisations Vercel n’ont pas été inspectés. Aucun compte, rôle ni paramètre de production n’est modifié par la maquette.
+
+## Rubriques Enclave, école et bibliothèque
+
+Ajout à la maquette de trois accès et de présentations dédiées. L’en-tête mentionne « Commune du Nord — Au cœur de l’Enclave ». Orthographe : Boursies.
+
+Sources consultées le 17 octobre 2026 :
+- Département du Pas-de-Calais, L’Écho n°192, juillet–août 2019, reportage « Une enclave du Nord dans le Pas-de-Calais » (page 14) : https://www.pasdecalais.fr/download/file/19433?key=Fd%2FFkAjHi9oornIhx3pe3Q%3D%3D
+- Commune de Doignies, Jeunesse : https://www.doignies.fr/services/jeunesse (RPI des trois communes et bibliothèque-ludothèque de Mœuvres).
+- Commune de Doignies, historique : https://www.doignies.fr/decouverte/lhistorique-du-village
+
+La page Jeunesse ne porte pas de date de mise à jour visible ; noms des enseignants, répartition des classes, tarifs, gratuité et horaires n’ont pas été repris comme informations actuelles. Les coordonnées et modalités actuelles de l’école et de la bibliothèque devront être confirmées auprès de la commune avant publication définitive. Aucun renseignement sur les enfants n’est collecté dans la maquette.
