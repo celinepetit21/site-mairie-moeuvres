@@ -30,7 +30,7 @@ function easter(year: number): { month: number; day: number } {
   const h = (19 * a + b - d - g + 15) % 30;
   const i = Math.floor(c / 4);
   const k = c % 4;
-  const l = (32 + 2 * e + 2 * i - h - k + 7 * 7) % 7;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
   const m = Math.floor((a + 11 * h + 22 * l) / 451);
   const month = Math.floor((h + l - 7 * m + 114) / 31);
   return { month, day: ((h + l - 7 * m + 114) % 31) + 1 };
