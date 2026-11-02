@@ -3,6 +3,7 @@ import { seasons,type Appearance } from '@/lib/appearance';
 export function SeasonIcon({season,size=28}:{season:Appearance['saison'];size?:number}){
  const props={size,strokeWidth:1.7,'aria-hidden':true as const};
  if(season==='octobre_rose')return <Ribbon {...props}/>;
+ if(season==='movember')return <svg width={size} height={size} viewBox="0 0 36 36" aria-hidden="true"><path d="M18 17c-2-4-5-5-8-5-4 0-6 3-7 7 3-2 6-2 8-1 2 1 4 5 7 5 3 0 5-4 7-5 2-1 5-1 8 1-1-4-3-7-7-7-3 0-6 1-8 5Z" fill="currentColor" fillOpacity=".3" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/></svg>;
  if(season==='noel')return <TreePine {...props}/>;
  if(season==='saint_valentin')return <Heart {...props} fill="currentColor" fillOpacity=".15"/>;
  if(season==='paques')return <Egg {...props}/>;
@@ -13,7 +14,7 @@ export function SeasonIcon({season,size=28}:{season:Appearance['saison'];size?:n
  if(season==='premier_mai')return <svg width={size} height={size} viewBox="0 0 36 40" aria-hidden="true"><path d="M17 37V5m0 13 9-7m-9 2-7-5" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M16 35Q2 30 6 17q12 6 10 18Zm3 0q15-4 12-15-10 3-12 15Z" fill="currentColor" fillOpacity=".3"/><path d="M7 6q-4 4-1 7h8q3-3-1-7ZM23 9q-4 4-1 7h9q2-3-2-7ZM14 2q-4 4-1 7h8q3-3-1-7Z" fill="#fff" stroke="currentColor" strokeWidth="1.2"/></svg>;
  return <Sparkles {...props}/>;
 }
-const defaultMessages:Partial<Record<Appearance['saison'],string>>={octobre_rose:'Octobre Rose — Ensemble, mobilisons-nous',halloween:'Halloween au village',noel:'Joyeuses fêtes à Mœuvres',nouvel_an:'Bonne année à toutes et à tous',saint_valentin:'Une touche de douceur à Mœuvres',paques:'Joyeuses Pâques',premier_mai:'Un brin de bonheur pour le 1er mai',huit_mai:'8 mai — Mémoire et commémoration',quatorze_juillet:'14 juillet — Fête nationale',fete_musique:'Le village en musique',rentree:'Bonne rentrée à toutes et à tous',personnalisee:'Le village en fête'};
+const defaultMessages:Partial<Record<Appearance['saison'],string>>={octobre_rose:'Octobre Rose — Ensemble, mobilisons-nous',halloween:'Halloween au village',movember:'Novembre Bleu — Ensemble, parlons de la santé des hommes',noel:'Joyeuses fêtes à Mœuvres',nouvel_an:'Bonne année à toutes et à tous',saint_valentin:'Une touche de douceur à Mœuvres',paques:'Joyeuses Pâques',premier_mai:'Un brin de bonheur pour le 1er mai',huit_mai:'8 mai — Mémoire et commémoration',quatorze_juillet:'14 juillet — Fête nationale',fete_musique:'Le village en musique',rentree:'Bonne rentrée à toutes et à tous',personnalisee:'Le village en fête'};
 export function SeasonBanner({appearance:a}:{appearance:Appearance}){
  if(a.saison==='aucune')return null;
  return <div className={`season-banner season-${a.saison}`}><SeasonIcon season={a.saison}/><span>{a.texte||defaultMessages[a.saison]||seasons[a.saison]}</span><span className="season-banner-end"><SeasonIcon season={a.saison}/></span></div>;
