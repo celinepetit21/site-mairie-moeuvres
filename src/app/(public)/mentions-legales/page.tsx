@@ -20,7 +20,8 @@ export default function Legal() {
           Grand’Place, 59400 Mœuvres, France<br />
           Téléphone : <a href="tel:+33327825039">03 27 82 50 39</a><br />
           Courriel : <a href="mailto:moeuvres@wanadoo.fr">moeuvres@wanadoo.fr</a><br />
-          SIREN : 215 904 053
+          SIREN : 215 904 053<br />
+          Code INSEE de la commune : 59405
         </p>
         <p>Le site présente les actualités, l’agenda, les informations pratiques, les services, les associations et les documents de la commune.</p>
       </section>
@@ -87,7 +88,7 @@ export default function Legal() {
         <p>Si vous rencontrez une difficulté pour consulter un contenu ou effectuer une démarche, vous pouvez contacter la mairie au <a href="tel:+33327825039">03 27 82 50 39</a> ou par courriel à <a href="mailto:moeuvres@wanadoo.fr">moeuvres@wanadoo.fr</a> afin de demander une solution adaptée.</p>
       </section>
 
-      <p className="muted">Dernière mise à jour : 29 octobre 2026.</p>
+      <p className="muted">Dernière mise à jour : 6 novembre 2026.</p>
     </main>
   );
 }
