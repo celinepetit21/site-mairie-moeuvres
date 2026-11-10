@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Menu, X, Search, ChevronDown } from 'lucide-react';
 const groups=[
- {id:'commune',label:'La commune',links:[['/commune','Découvrir Mœuvres'],['/commune/conseil-municipal','Conseil municipal'],['/informations','Informations municipales'],['/inscription','Recevoir les informations'],['/associations','Associations'],['/photos','Galerie photos']]},
+ {id:'commune',label:'La commune',links:[['/commune','Découvrir Mœuvres'],['/commune/conseil-municipal','Conseil municipal'],['/informations','Informations municipales'],['/associations','Associations'],['/photos','Galerie photos']]},
  {id:'quotidien',label:'Au quotidien',links:[['/demarches','Vos démarches'],['/vie-pratique','Vie pratique'],['/salle-des-fetes','Louer la salle des fêtes'],['/documents','Documents utiles']]},
 ];
 export function PublicNavigation(){
