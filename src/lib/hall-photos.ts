@@ -5,21 +5,6 @@ export const hallPhotos = [
     "description": "La façade en briques et l’entrée de la salle."
   },
   {
-    "src": "/salle-des-fetes/porte-entree.png",
-    "title": "L’entrée de la salle",
-    "description": "La porte d’entrée de la salle des fêtes."
-  },
-  {
-    "src": "/salle-des-fetes/accueil.png",
-    "title": "Un hall pour accueillir vos invités",
-    "description": "L’entrée et son comptoir d’accueil."
-  },
-  {
-    "src": "/salle-des-fetes/hall-entree.png",
-    "title": "Le hall d’entrée",
-    "description": "Le comptoir et les ouvertures du hall."
-  },
-  {
     "src": "/salle-des-fetes/grande-salle.png",
     "title": "Un grand espace de réception",
     "description": "La salle principale, ses poutres apparentes et ses ouvertures en toiture."
@@ -30,9 +15,24 @@ export const hallPhotos = [
     "description": "La scène surélevée et son mur de briques."
   },
   {
+    "src": "/salle-des-fetes/accueil.png",
+    "title": "Un hall pour accueillir vos invités",
+    "description": "L’entrée et son comptoir d’accueil."
+  },
+  {
     "src": "/salle-des-fetes/salle-vue-ensemble.png",
     "title": "Une salle ouverte et lumineuse",
     "description": "Une vue d’ensemble de l’espace principal."
+  },
+  {
+    "src": "/salle-des-fetes/hall-entree.png",
+    "title": "Le hall d’entrée",
+    "description": "Le comptoir et les ouvertures du hall."
+  },
+  {
+    "src": "/salle-des-fetes/porte-entree.png",
+    "title": "L’entrée de la salle",
+    "description": "La porte d’entrée de la salle des fêtes."
   },
   {
     "src": "/salle-des-fetes/scene-vue-reelle.jpg",
