@@ -81,7 +81,7 @@ export async function saveContent(sectionValue:string,id:string|null,_state:Acti
  const eventDayEnd=String(form.get('date_evenement_fin')??'').trim();
  const eventPeriod=String(form.get('periode_evenement')??'').trim();
  if(sectionValue==='actualites'){
-  const validDay=(v:string)=>/^\\d{4}-\\d{2}-\\d{2}$/.test(v)&&!Number.isNaN(Date.parse(v))&&new Date(v).toISOString().slice(0,10)===v;
+  const validDay=(v:string)=>/^\d{4}-\d{2}-\d{2}$/.test(v)&&!Number.isNaN(Date.parse(v))&&new Date(v).toISOString().slice(0,10)===v;
   if((eventDay&&!validDay(eventDay))||(eventDayEnd&&!validDay(eventDayEnd)))return {error:'Date de manifestation invalide.'};
   if(eventDayEnd&&(!eventDay||eventDayEnd<eventDay))return {error:'La fin de la manifestation doit suivre son début.'};
   if(eventPeriod.length>120)return {error:'La période de manifestation est trop longue.'};
