@@ -4,7 +4,7 @@ import {published} from '@/lib/data';
 import {associationLogos,associationNames,associationSort} from '@/lib/association-data';
 import {pageCategories,type PageCategory} from '@/lib/types';
 import './association-page.css';
-const intros={commune:'Découvrez le village, son histoire et la vie municipale.',demarches:'Retrouvez les informations préparées par la mairie pour vos démarches.','vie-pratique':'Les services et renseignements utiles au quotidien.',associations:'Les associations qui font vivre notre village : manifestations, actualités et contacts.'};
+const intros={commune:'Découvrez le village, son histoire et la vie municipale.',demarches:'Retrouvez les informations préparées par la mairie pour vos démarches.','vie-pratique':'Les services et renseignements utiles au quotidien.',associations:'Les associations qui font vivre notre village : manifestations, actualités et contacts.',talents:'Découvrez les habitants qui font rayonner Mœuvres par leurs réussites et leurs engagements.'};
 export async function RubricPage({category}:{category:PageCategory}){
  const rows=(await published('pages',1000)).filter(p=>p.categorie===category);
  if(category==='associations')rows.sort((a,b)=>associationSort(a.id)-associationSort(b.id));
