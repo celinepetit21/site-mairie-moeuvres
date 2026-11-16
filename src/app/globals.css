@@ -138,3 +138,13 @@
 .facebook-embed-frame{width:100%;max-width:500px;margin:18px auto 14px;overflow-x:auto;border-radius:12px;background:#f5f5f5}
 .facebook-embed-frame iframe{display:block;border:0}
 .facebook-article .facebook-original-link{display:inline-block;text-decoration:underline;text-underline-offset:3px;font-weight:600;overflow-wrap:anywhere}
+
+/* Actualités : une vraie vignette photo, de taille identique pour chaque article. */
+.actualite-list-card{padding:20px 22px;gap:20px;align-items:center}
+.actualite-list-card>.list-icon{width:156px;height:108px;flex:0 0 156px;display:block;overflow:hidden;border-radius:8px;background:#edf1e9}
+.actualite-list-card .news-list-image{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+.actualite-list-card h2{font-size:1.38rem;margin-bottom:7px}
+.actualite-list-card .eyebrow{margin-bottom:6px}
+.illustration-caption{color:var(--muted);font-size:.78rem;line-height:1.5;margin-top:6px}
+.illustration-caption a{text-decoration:underline;text-underline-offset:2px}
+@media(max-width:600px){.actualite-list-card{padding:14px;gap:13px;align-items:flex-start}.actualite-list-card>.list-icon{width:104px;height:90px;flex-basis:104px}.actualite-list-card h2{font-size:1.07rem}.actualite-list-card p:not(.eyebrow){font-size:.77rem}}
