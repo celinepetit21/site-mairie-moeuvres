@@ -14,6 +14,7 @@ export type Content = {
  published_at: string | null; created_at: string; updated_at: string;
  association_evenements?: {title:string;date:string;label:string;url?:string;photo_id?:string|null}[]|null; association_actualites?: {title:string;date:string;description:string;url?:string}[]|null; facebook_url?:string|null;helloasso_url?:string|null; categorie?: PageCategory; photo_id?: string | null; document_id?: string | null;
  date_debut?: string | null; date_fin?: string | null; lieu?: string;
+ date_evenement?: string | null; date_evenement_fin?: string | null; periode_evenement?: string | null;
 };
 export type AssetKind = 'documents' | 'photos';
 export type Asset = { id: string; titre: string; chemin: string; mime_type: string; taille: number; statut: 'brouillon' | 'publie'; published_at: string | null; created_at: string };
