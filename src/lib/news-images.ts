@@ -22,12 +22,12 @@ export const newsImages: Record<string, NewsImage> = {
     alt: 'Élus, porte-drapeaux, habitants et enfants réunis devant le monument aux morts de Mœuvres',
   },
   'af4d00f7-7ede-4280-8520-3e1cb3d2f0db': {
-    src: '/actualites/commemoration-moeuvres.avif',
-    alt: 'Rassemblement devant le monument aux morts de Mœuvres pour le 11 novembre',
+    src: '/actualites/11-novembre-2026-photo.webp',
+    alt: 'Élus, habitants et enfants réunis devant le monument aux morts à Mœuvres le 11 novembre 2026',
   },
   'c8df1126-0111-4111-8111-202611160001': {
-    src: '/actualites/commemoration-moeuvres.avif',
-    alt: 'Habitants et porte-drapeaux à Mœuvres lors d’une cérémonie de mémoire',
+    src: '/actualites/11-novembre-2026-photo.webp',
+    alt: 'Photographie de la commémoration du 11 novembre 2026 à Mœuvres',
   },
   '4b6e9d04-6cb2-4087-bf79-2e14874f60ae': {
     src: 'https://images.unsplash.com/photo-1636319428693-a252ef9c8c6c?auto=format&fit=crop&w=960&q=80',
