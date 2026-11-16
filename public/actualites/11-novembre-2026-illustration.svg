@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-labelledby="t d">
+<title id="t">11 novembre 2026, commémoration à Mœuvres</title>
+<desc id="d">Illustration commémorative aux couleurs de la France, sans photographie d'un autre événement.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#183653"/><stop offset="1" stop-color="#406887"/></linearGradient></defs>
+<rect width="1200" height="650" rx="24" fill="url(#bg)"/>
+<path d="M0 0h76v650H0z" fill="#1e459a"/><path d="M76 0h76v650H76z" fill="#fff"/><path d="M152 0h76v650h-76z" fill="#d52e3b"/>
+<path d="M1020 124c-64 20-99 64-121 107 70-25 96-67 121-107zm30 43c-50 29-72 65-81 102 58-28 83-67 81-102zM991 255c-63 7-114 43-145 97 65-11 116-48 145-97zm-22 74c-61 22-111 68-140 120 65-23 107-68 140-120z" fill="#e5caa0" opacity=".3"/>
+<text x="280" y="150" fill="#f4e9d1" font-family="Georgia,serif" font-size="58" letter-spacing="4">MŒUVRES</text>
+<text x="278" y="275" fill="#fff" font-family="Georgia,serif" font-size="112">11 NOVEMBRE</text>
+<text x="283" y="382" fill="#fff" font-family="Georgia,serif" font-size="102">2026</text>
+<path d="M280 414h650" stroke="#e9c693" stroke-width="5"/>
+<text x="281" y="490" fill="#f3e7d2" font-family="Arial,sans-serif" font-size="36" letter-spacing="2">DEVOIR DE MÉMOIRE</text>
+<text x="281" y="543" fill="#f3e7d2" font-family="Arial,sans-serif" font-size="28">Commémoration de l'Armistice de 1918</text>
+</svg>
