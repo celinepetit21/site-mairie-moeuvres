@@ -3,6 +3,12 @@ import './article-gallery.css';
 type ArticlePhoto = { src: string; alt: string };
 
 const galleries: Record<string, ArticlePhoto[]> = {
+  '13dcb946-4cb2-4c30-94e6-83ca27ea7a20': [
+    {
+      src: '/actualites/animation-enfants-caravane-2026.webp',
+      alt: 'Les enfants et une animatrice souriants devant une caravane à Mœuvres',
+    },
+  ],
   'ad1e0dcc-5c92-4181-b055-8c8cb3f0a769': [
     {
       src: '/actualites/paques-2026-1.webp',
