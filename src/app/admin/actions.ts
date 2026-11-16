@@ -90,7 +90,7 @@ export async function saveContent(sectionValue:string,id:string|null,_state:Acti
  let oldPublished:string|null=null;
  if(id){const {data,error}=await client.from(sections[sectionValue].table).select('published_at').eq('id',id).single();if(error)return {error:'Ce contenu est introuvable.'};oldPublished=data.published_at;}
  const payload={...base,...associationFields,...facebookFields,published_at:base.statut==='publie'?(oldPublished??new Date().toISOString()):null,...references,...(sectionValue==='pages'?{categorie}:sectionValue==='actualites'?{date_evenement:eventDay||null,date_evenement_fin:eventDayEnd||null,periode_evenement:eventPeriod||null}:{date_debut,date_fin,lieu})};
- const query=id?client.from(sections[sectionValue].table).update(payload).eq('id',id):client.from(sections[sectionValue].table).insert(payload);
+ const query=id?client.from(sections[sectionValue].table).update(payload as never).eq('id',id):client.from(sections[sectionValue].table).insert(payload as never);
  const {error}=await query.select('id').single();
  if(error)return {error:'Enregistrement impossible. Vérifiez le schéma SQL et vos autorisations.'};
  revalidatePath('/');revalidatePath('/admin');revalidatePath(`/${sectionValue}`);
