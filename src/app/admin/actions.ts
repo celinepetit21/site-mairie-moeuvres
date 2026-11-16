@@ -51,6 +51,17 @@ export async function saveContent(sectionValue:string,id:string|null,_state:Acti
   if(value){const {data,error}=await client.from(table).select('id').eq('id',value).eq('statut','publie').lte('published_at',new Date().toISOString()).maybeSingle();if(error||!data)return {error:'Le fichier choisi doit être publié.'};}
   references[field]=value||null;
  }
+ const facebookFields:Record<string,unknown>={};
+ if(sectionValue==='actualites'){
+  const link=String(form.get('facebook_url')??'').trim();
+  if(link){
+   try{
+    const url=new URL(link);
+    if(url.protocol!=='https:'||!['facebook.com','www.facebook.com','m.facebook.com'].includes(url.hostname)||url.username||url.password||link.length>2000)throw new Error('Lien invalide');
+    facebookFields.facebook_url=url.toString();
+   }catch{return {error:'Indiquez un lien HTTPS valide vers une publication Facebook.'};}
+  }else facebookFields.facebook_url=null;
+ }
  const associationFields:Record<string,unknown>={};
  if(sectionValue==='pages'&&categorie==='associations'){
   const safeLink=z.string().max(2000).refine(v=>!v||(/^https:\/\//i.test(v)&&(()=>{try{return !new URL(v).username&&!new URL(v).password;}catch{return false;}})()),'Utilisez un lien HTTPS valide.');
@@ -69,7 +80,7 @@ export async function saveContent(sectionValue:string,id:string|null,_state:Acti
  const {date_debut,date_fin,lieu,...base}=parsed.data;
  let oldPublished:string|null=null;
  if(id){const {data,error}=await client.from(sections[sectionValue].table).select('published_at').eq('id',id).single();if(error)return {error:'Ce contenu est introuvable.'};oldPublished=data.published_at;}
- const payload={...base,...associationFields,published_at:base.statut==='publie'?(oldPublished??new Date().toISOString()):null,...references,...(sectionValue==='pages'?{categorie}:sectionValue==='actualites'?{}:{date_debut,date_fin,lieu})};
+ const payload={...base,...associationFields,...facebookFields,published_at:base.statut==='publie'?(oldPublished??new Date().toISOString()):null,...references,...(sectionValue==='pages'?{categorie}:sectionValue==='actualites'?{}:{date_debut,date_fin,lieu})};
  const query=id?client.from(sections[sectionValue].table).update(payload).eq('id',id):client.from(sections[sectionValue].table).insert(payload);
  const {error}=await query.select('id').single();
  if(error)return {error:'Enregistrement impossible. Vérifiez le schéma SQL et vos autorisations.'};
