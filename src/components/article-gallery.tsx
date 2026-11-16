@@ -3,6 +3,14 @@ import './article-gallery.css';
 type ArticlePhoto = { src: string; alt: string };
 
 const galleries: Record<string, ArticlePhoto[]> = {
+  'ae24b02a-7c69-41bf-9e56-35e3487b12c8': [
+    { src: '/actualites/pentecote-2026-1.webp', alt: 'Photo de groupe sous la tonnelle pendant les festivités de Pentecôte à Mœuvres' },
+    { src: '/actualites/pentecote-2026-2.webp', alt: 'Équipe des bénévoles de la fête de Pentecôte sous un chapiteau' },
+    { src: '/actualites/pentecote-2026-3.webp', alt: 'Concert avec chant et accordéon dans l’église de Mœuvres' },
+    { src: '/actualites/pentecote-2026-4.webp', alt: 'Enfants et familles autour des stands et des ballons à la fête foraine' },
+    { src: '/actualites/pentecote-2026-5.webp', alt: 'Moment convivial autour des ballons multicolores à la fête foraine' },
+    { src: '/actualites/pentecote-2026-6.webp', alt: 'Une jeune participante souriante avec son ballon pendant les festivités' },
+  ],
   '554f4085-e9bf-4acc-926f-64bc39485823': [
     {
       src: '/actualites/enfants-moeuvres-2026-1.jpg',
@@ -40,7 +48,7 @@ export function ArticleGallery({ articleId }: { articleId: string }) {
   if (images.length === 0) return null;
 
   return (
-    <section className="article-gallery" aria-label="Photographies de cette actualité">
+    <section className={articleId === "ae24b02a-7c69-41bf-9e56-35e3487b12c8" ? "article-gallery article-gallery-pentecote" : "article-gallery"} aria-label="Photographies de cette actualité">
       <h2>Retour en images</h2>
       <div className="article-gallery-grid">
         {images.map((photo, index) => (
