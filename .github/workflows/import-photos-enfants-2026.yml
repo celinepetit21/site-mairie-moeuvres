@@ -1,0 +1,91 @@
+name: Importer les trois photos de l'actualite enfants 2026
+on:
+  push:
+    paths:
+      - .github/workflows/import-photos-enfants-2026.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-photos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Enregistrer les trois photographies dans le site
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from urllib.request import Request, urlopen
+          from urllib.parse import quote, urlparse
+          from html.parser import HTMLParser
+          import json
+          from pathlib import Path
+
+          post = "https://www.facebook.com/permalink.php?story_fbid=pfbid02uoaPWFKBDzE6ZUYP39LiUfYTXuGPxvpQaWroMiJxSWhE982AvuosxK8mQgQSmZ7vl&id=61582617293338"
+          source = "https://www.facebook.com/plugins/post.php?href=" + quote(post, safe="") + "&show_text=true&width=500"
+          html = urlopen(Request(source, headers={"User-Agent": "facebookexternalhit/1.1"}), timeout=45).read().decode("utf-8", "replace")
+
+          class Scripts(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.active = False
+                  self.data = []
+              def handle_starttag(self, tag, attrs):
+                  if tag == "script":
+                      self.active = any(k == "type" and v == "application/ld+json" for k,v in attrs)
+              def handle_data(self, content):
+                  if self.active:
+                      self.data.append(content)
+              def handle_endtag(self, tag):
+                  if tag == "script":
+                      self.active = False
+
+          parser = Scripts()
+          parser.feed(html)
+          expected = ["733565426", "735149967", "735430071"]
+          photos = {}
+          for entry in parser.data:
+              try:
+                  item = json.loads(entry)
+              except (ValueError, TypeError):
+                  continue
+              for image in item.get("image", []):
+                  url = image.get("contentUrl", "")
+                  if not urlparse(url).hostname.endswith(".fbcdn.net"):
+                      continue
+                  for identifier in expected:
+                      if identifier in url:
+                          photos[identifier] = url
+
+          if set(photos) != set(expected):
+              raise RuntimeError("Photos Facebook non retrouvees : " + str(set(expected) - set(photos)))
+
+          folder = Path("public/actualites")
+          folder.mkdir(exist_ok=True, parents=True)
+          for num, identifier in enumerate(expected, 1):
+              request = Request(photos[identifier], headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125.0"})
+              with urlopen(request, timeout=45) as response:
+                  data = response.read()
+              if not data.startswith(bytes.fromhex("ffd8")) or len(data) < 40000:
+                  raise RuntimeError("Image invalide ou de trop basse resolution : " + identifier)
+              name = folder / f"enfants-moeuvres-2026-{num}.jpg"
+              name.write_bytes(data)
+              print(f"{name}: {len(data)} octets")
+
+          PY
+      - name: Enregistrer les photographies sur la branche principale
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/actualites/enfants-moeuvres-2026-*.jpg
+          if git diff --cached --quiet; then
+            echo "Les photographies existent deja."
+          else
+            git commit -m "Ajouter les trois photographies de l'actualite enfants 2026"
+            git push origin HEAD:main
+          fi
