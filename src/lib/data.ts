@@ -9,7 +9,8 @@ export async function published(section:Section, limit=100): Promise<Content[]> 
  const client=publicClient(); if (!client) return [];
  let query=client.from(sections[section].table).select('*').eq('statut','publie').lte('published_at',new Date().toISOString());
  if(section === 'informations') query=query.or(`date_debut.is.null,date_debut.lte.${new Date().toISOString()}`).or(`date_fin.is.null,date_fin.gte.${new Date().toISOString()}`);
- const {data,error}=await query.order(section==='evenements'?'date_debut':'published_at',{ascending:section==='evenements'}).limit(limit);
+ const sorted = section==='actualites' ? query.order('date_evenement',{ascending:false,nullsFirst:false}).order('published_at',{ascending:false}) : query.order(section==='evenements'?'date_debut':'published_at',{ascending:section==='evenements'});
+ const {data,error}=await sorted.limit(limit);
  if(error){logSupabaseError(`contents:${section}`,error);throw new Error('Les contenus municipaux sont temporairement indisponibles.');}
  return (data??[]) as Content[];
 }
@@ -30,3 +31,11 @@ export async function signedAsset(asset:Asset,kind:'documents'|'photos') {
  if(error)return null;return data.signedUrl;
 }
 export function dateLabel(value?:string|null) { return value ? new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(value)) : ''; }
+
+// La date affichée est celle de la manifestation, et jamais celle de sa mise en ligne.
+export function newsEventDateLabel(item: Pick<Content, 'date_evenement' | 'date_evenement_fin' | 'periode_evenement'>) {
+ if(item.periode_evenement?.trim()) return item.periode_evenement.trim();
+ if(!item.date_evenement) return 'Date de l’événement à préciser';
+ const format = (day:string) => new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',day:'numeric',month:'long',year:'numeric'}).format(new Date(day+'T12:00:00Z'));
+ return item.date_evenement_fin ? `Du ${format(item.date_evenement)} au ${format(item.date_evenement_fin)}` : format(item.date_evenement);
+}
