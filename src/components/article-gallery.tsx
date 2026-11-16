@@ -1,3 +1,7 @@
+'use client';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import './article-gallery.css';
 
 type ArticlePhoto = { src: string; alt: string };
@@ -45,25 +49,138 @@ const galleries: Record<string, ArticlePhoto[]> = {
 
 export function ArticleGallery({ articleId }: { articleId: string }) {
   const images = galleries[articleId] ?? [];
-  if (images.length === 0) return null;
+  const [selected, setSelected] = useState<number | null>(null);
+  const openerIndex = useRef(0);
+  const thumbnails = useRef<Array<HTMLButtonElement | null>>([]);
+  const closeButton = useRef<HTMLButtonElement>(null);
+  const dialog = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number | null>(null);
+  const isOpen = selected !== null;
+
+  const move = useCallback((direction: number) => {
+    setSelected((current) =>
+      current === null || images.length < 2
+        ? current
+        : (current + direction + images.length) % images.length
+    );
+  }, [images.length]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeButton.current?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setSelected(null);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        move(1);
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        move(-1);
+      } else if (event.key === 'Tab') {
+        const buttons = Array.from(dialog.current?.querySelectorAll<HTMLButtonElement>('button') ?? []);
+        if (!buttons.length) return;
+        const first = buttons[0];
+        const last = buttons[buttons.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      thumbnails.current[openerIndex.current]?.focus();
+    };
+  }, [isOpen, move]);
+
+  if (!images.length) return null;
+
+  const open = (index: number) => {
+    openerIndex.current = index;
+    setSelected(index);
+  };
+  const currentPhoto = selected === null ? null : images[selected];
 
   return (
-    <section className={articleId === "ae24b02a-7c69-41bf-9e56-35e3487b12c8" ? "article-gallery article-gallery-pentecote" : "article-gallery"} aria-label="Photographies de cette actualité">
+    <section
+      className={articleId === 'ae24b02a-7c69-41bf-9e56-35e3487b12c8'
+        ? 'article-gallery article-gallery-pentecote'
+        : 'article-gallery'}
+      aria-label="Photographies de cette actualité"
+    >
       <h2>Retour en images</h2>
       <div className="article-gallery-grid">
         {images.map((photo, index) => (
           <figure key={photo.src}>
-            <a
-              href={photo.src}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Agrandir la photographie ${index + 1}`}
+            <button
+              type="button"
+              className="article-gallery-thumbnail"
+              ref={(node) => { thumbnails.current[index] = node; }}
+              onClick={() => open(index)}
+              aria-label={`Agrandir la photographie ${index + 1} sur ${images.length}, sans quitter la page`}
             >
               <img src={photo.src} alt={photo.alt} loading="lazy" width={500} height={231} />
-            </a>
+            </button>
           </figure>
         ))}
       </div>
+
+      {currentPhoto && (
+        <div
+          ref={dialog}
+          className="article-gallery-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Visionneuse de photographies"
+        >
+          <div className="article-gallery-lightbox-header">
+            <span aria-live="polite">Photo {selected! + 1} sur {images.length}</span>
+            <button ref={closeButton} type="button" onClick={() => setSelected(null)} aria-label="Fermer la photo">
+              <X aria-hidden="true" size={26} />
+            </button>
+          </div>
+          <div
+            className="article-gallery-lightbox-stage"
+            onTouchStart={(event) => {
+              touchStartX.current = event.touches[0]?.clientX ?? null;
+            }}
+            onTouchEnd={(event) => {
+              const start = touchStartX.current;
+              const end = event.changedTouches[0]?.clientX;
+              touchStartX.current = null;
+              if (start !== null && end !== undefined && Math.abs(end - start) > 55) {
+                move(end < start ? 1 : -1);
+              }
+            }}
+          >
+            {images.length > 1 && (
+              <button type="button" className="article-gallery-lightbox-arrow" onClick={() => move(-1)} aria-label="Photo précédente">
+                <ChevronLeft aria-hidden="true" size={34} />
+              </button>
+            )}
+            <figure className="article-gallery-lightbox-figure">
+              <img src={currentPhoto.src} alt={currentPhoto.alt} />
+            </figure>
+            {images.length > 1 && (
+              <button type="button" className="article-gallery-lightbox-arrow" onClick={() => move(1)} aria-label="Photo suivante">
+                <ChevronRight aria-hidden="true" size={34} />
+              </button>
+            )}
+          </div>
+          <p className="article-gallery-lightbox-caption">{currentPhoto.alt}</p>
+        </div>
+      )}
     </section>
   );
 }
