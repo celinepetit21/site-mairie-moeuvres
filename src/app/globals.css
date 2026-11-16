@@ -130,3 +130,11 @@
 .legal-page .legal-section a{text-decoration:underline;text-underline-offset:3px}
 .legal-page .legal-section a:hover{color:var(--gold)}
 .legal-page>.muted{margin-top:28px}
+
+/* Publication Facebook associée à une actualité */
+.facebook-article{margin-top:34px;padding:28px 0;border-top:1px solid var(--line)}
+.facebook-article h2{margin-bottom:10px;font-size:clamp(1.3rem,2.5vw,1.8rem)}
+.facebook-article p{color:var(--muted);line-height:1.6}
+.facebook-embed-frame{width:100%;max-width:500px;margin:18px auto 14px;overflow-x:auto;border-radius:12px;background:#f5f5f5}
+.facebook-embed-frame iframe{display:block;border:0}
+.facebook-article .facebook-original-link{display:inline-block;text-decoration:underline;text-underline-offset:3px;font-weight:600;overflow-wrap:anywhere}
