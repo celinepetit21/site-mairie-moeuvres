@@ -1,4 +1,4 @@
-export const pageCategories = { commune: 'La commune', demarches: 'Démarches', 'vie-pratique': 'Vie pratique', associations: 'Associations' } as const;
+export const pageCategories = { commune: 'La commune', demarches: 'Démarches', 'vie-pratique': 'Vie pratique', associations: 'Associations', talents: 'Nos talents' } as const;
 export type PageCategory = keyof typeof pageCategories;
 export function isPageCategory(value: string): value is PageCategory { return Object.hasOwn(pageCategories,value); }
 export const sections = {
