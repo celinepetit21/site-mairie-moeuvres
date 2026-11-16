@@ -3,6 +3,20 @@ import './article-gallery.css';
 type ArticlePhoto = { src: string; alt: string };
 
 const galleries: Record<string, ArticlePhoto[]> = {
+  '554f4085-e9bf-4acc-926f-64bc39485823': [
+    {
+      src: '/actualites/enfants-moeuvres-2026-1.jpg',
+      alt: 'Deux enfants installés sur un banc coloré pendant une animation à Mœuvres',
+    },
+    {
+      src: '/actualites/enfants-moeuvres-2026-2.jpg',
+      alt: 'Groupe d’enfants avec des bulles de savon dans la cour de Mœuvres',
+    },
+    {
+      src: '/actualites/enfants-moeuvres-2026-3.jpg',
+      alt: 'Deux personnes bénévoles au stand de boissons pendant une animation à Mœuvres',
+    },
+  ],
   '13dcb946-4cb2-4c30-94e6-83ca27ea7a20': [
     {
       src: '/actualites/animation-enfants-caravane-2026.webp',
