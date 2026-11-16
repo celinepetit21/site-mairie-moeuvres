@@ -77,10 +77,19 @@ export async function saveContent(sectionValue:string,id:string|null,_state:Acti
   }
   Object.assign(associationFields,links.data,{association_evenements:events});
  }
+ const eventDay=String(form.get('date_evenement')??'').trim();
+ const eventDayEnd=String(form.get('date_evenement_fin')??'').trim();
+ const eventPeriod=String(form.get('periode_evenement')??'').trim();
+ if(sectionValue==='actualites'){
+  const validDay=(v:string)=>/^\\d{4}-\\d{2}-\\d{2}$/.test(v)&&!Number.isNaN(Date.parse(v))&&new Date(v).toISOString().slice(0,10)===v;
+  if((eventDay&&!validDay(eventDay))||(eventDayEnd&&!validDay(eventDayEnd)))return {error:'Date de manifestation invalide.'};
+  if(eventDayEnd&&(!eventDay||eventDayEnd<eventDay))return {error:'La fin de la manifestation doit suivre son début.'};
+  if(eventPeriod.length>120)return {error:'La période de manifestation est trop longue.'};
+ }
  const {date_debut,date_fin,lieu,...base}=parsed.data;
  let oldPublished:string|null=null;
  if(id){const {data,error}=await client.from(sections[sectionValue].table).select('published_at').eq('id',id).single();if(error)return {error:'Ce contenu est introuvable.'};oldPublished=data.published_at;}
- const payload={...base,...associationFields,...facebookFields,published_at:base.statut==='publie'?(oldPublished??new Date().toISOString()):null,...references,...(sectionValue==='pages'?{categorie}:sectionValue==='actualites'?{}:{date_debut,date_fin,lieu})};
+ const payload={...base,...associationFields,...facebookFields,published_at:base.statut==='publie'?(oldPublished??new Date().toISOString()):null,...references,...(sectionValue==='pages'?{categorie}:sectionValue==='actualites'?{date_evenement:eventDay||null,date_evenement_fin:eventDayEnd||null,periode_evenement:eventPeriod||null}:{date_debut,date_fin,lieu})};
  const query=id?client.from(sections[sectionValue].table).update(payload).eq('id',id):client.from(sections[sectionValue].table).insert(payload);
  const {error}=await query.select('id').single();
  if(error)return {error:'Enregistrement impossible. Vérifiez le schéma SQL et vos autorisations.'};
