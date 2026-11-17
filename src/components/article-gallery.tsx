@@ -35,16 +35,6 @@ const galleries: Record<string, ArticlePhoto[]> = {
       alt: 'Les enfants et une animatrice souriants devant une caravane à Mœuvres',
     },
   ],
-  'ad1e0dcc-5c92-4181-b055-8c8cb3f0a769': [
-    {
-      src: '/actualites/paques-2026-1.webp',
-      alt: 'Distribution de chocolats aux membres du Club des 4 Saisons autour de leur table',
-    },
-    {
-      src: '/actualites/paques-2026-2.webp',
-      alt: 'Remise de chocolats de Pâques lors de la rencontre avec les aînés du Club des 4 Saisons',
-    },
-  ],
 };
 
 export function ArticleGallery({ articleId }: { articleId: string }) {

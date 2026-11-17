@@ -63,10 +63,6 @@ export const newsImages: Record<string, NewsImage> = {
     src: '/actualites/pentecote-2026-1.webp',
     alt: 'Participants et bénévoles réunis sous une tonnelle pendant la Pentecôte à Mœuvres',
   },
-  'ad1e0dcc-5c92-4181-b055-8c8cb3f0a769': {
-    src: '/actualites/paques-2026-1.webp',
-    alt: 'Remise de chocolats aux membres du Club des 4 Saisons à Mœuvres',
-  },
 };
 
 export function imageForNews(item: Pick<Content, 'id' | 'photo_id'>): NewsImage {
